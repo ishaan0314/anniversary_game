@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anniversary Game</title>
+  <style>
+    canvas {
+      background: skyblue;
+      display: block;
+      margin: 0 auto;
+      border: 3px solid black;
+    }
+    #message {
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      font-size: 24px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="gameCanvas" width="800" height="400"></canvas>
+  <div id="message"></div>
+  <audio id="loveAudio" src="your-audio.mp3"></audio>
+  <script>
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    const player = {
+      x: 50,
+      y: 300,
+      width: 40,
+      height: 40,
+      color: 'red',
+      vy: 0,
+      jumpPower: -10,
+      grounded: false
+    };
+
+    const gravity = 0.5;
+    let keys = {};
+
+    const coins = [
+      { x: 200, y: 300, collected: false },
+      { x: 400, y: 300, collected: false },
+      { x: 600, y: 300, collected: false }
+    ];
+
+    const obstacles = [
+      { x: 300, y: 340, width: 20, height: 60 },
+      { x: 500, y: 340, width: 20, height: 60 }
+    ];
+
+    const goal = { x: 750, y: 300, width: 40, height: 40 };
+
+    function drawPlayer() {
+      ctx.fillStyle = player.color;
+      ctx.fillRect(player.x, player.y, player.width, player.height);
+    }
+
+    function drawCoins() {
+      ctx.fillStyle = 'gold';
+      coins.forEach(coin => {
+        if (!coin.collected) {
+          ctx.beginPath();
+          ctx.arc(coin.x, coin.y, 10, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      });
+    }
+
+    function drawObstacles() {
+      ctx.fillStyle = 'brown';
+      obstacles.forEach(obs => {
+        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+      });
+    }
+
+    function drawGoal() {
+      ctx.fillStyle = 'green';
+      ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
+    }
+
+    function update() {
+      // Movement
+      if (keys['ArrowRight']) player.x += 4;
+      if (keys['ArrowLeft']) player.x -= 4;
+      
+      if (player.grounded && keys['Space']) {
+        player.vy = player.jumpPower;
+        player.grounded = false;
+      }
+
+      player.vy += gravity;
+      player.y += player.vy;
+
+      if (player.y + player.height >= canvas.height) {
+        player.y = canvas.height - player.height;
+        player.vy = 0;
+        player.grounded = true;
+      }
+
+      // Coin Collection
+      coins.forEach(coin => {
+        if (!coin.collected && Math.abs(player.x - coin.x) < 30 && Math.abs(player.y - coin.y) < 30) {
+          coin.collected = true;
+        }
+      });
+
+      // Obstacle Collision
+      obstacles.forEach(obs => {
+        if (player.x < obs.x + obs.width && player.x + player.width > obs.x &&
+            player.y < obs.y + obs.height && player.y + player.height > obs.y) {
+          resetGame();
+        }
+      });
+
+      // Reaching the Goal
+      const allCollected = coins.every(c => c.collected);
+      if (player.x + player.width >= goal.x && player.x <= goal.x + goal.width && allCollected) {
+        document.getElementById('message').innerText = "You made it! Here's your surprise 💖";
+        document.getElementById('loveAudio').play();
+      }
+    }
+
+    function resetGame() {
+      player.x = 50;
+      player.y = 300;
+      coins.forEach(c => c.collected = false);
+    }
+
+    function gameLoop() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawPlayer();
+      drawCoins();
+      drawObstacles();
+      drawGoal();
+      update();
+      requestAnimationFrame(gameLoop);
+    }
+
+    document.addEventListener('keydown', e => keys[e.key] = true);
+    document.addEventListener('keyup', e => keys[e.key] = false);
+
+    gameLoop();
+  </script>
+</body>
+</html>
