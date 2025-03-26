@@ -22,13 +22,13 @@
 <body>
   <canvas id="gameCanvas" width="800" height="500"></canvas>
   <div id="message"></div>
-  <audio id="loveAudio" src="your-audio.mp3"></audio>
+  <audio id="loveAudio" src="anniversary_game_audio.mp3"></audio>
   <script>
     const canvas = document.getElementById('gameCanvas');
     const ctx = canvas.getContext('2d');
 
     const catImg = new Image();
-    catImg.src = 'https://i.imgur.com/jNNT4LE.png'; // white cat png
+    catImg.src = 'cat.png'; // replace with the name of your uploaded cat image file
 
     const player = {
       x: 50,
@@ -52,9 +52,9 @@
     }));
 
     const obstacles = [
-      { x: 600, y: 440, width: 20, height: 60 },
+      { x: 600, y: 440, width: 20, height: 60, requiresDuck: false },
       { x: 1200, y: 460, width: 60, height: 20, requiresDuck: true },
-      { x: 1600, y: 440, width: 30, height: 60 }
+      { x: 1600, y: 440, width: 30, height: 60, requiresDuck: false }
     ];
 
     const goal = { x: 1900, y: 400, width: 40, height: 40 };
@@ -117,8 +117,13 @@
         const duckingEnough = obs.requiresDuck ? player.ducking : true;
         const playerHeight = player.ducking ? 20 : player.height;
 
-        if (player.x < obs.x + obs.width && player.x + player.width > obs.x &&
-            player.y < obs.y + obs.height && player.y + playerHeight > obs.y && !duckingEnough) {
+        if (
+          player.x < obs.x + obs.width &&
+          player.x + player.width > obs.x &&
+          player.y < obs.y + obs.height &&
+          player.y + playerHeight > obs.y &&
+          !duckingEnough
+        ) {
           resetGame();
         }
       });
@@ -129,7 +134,6 @@
         document.getElementById('loveAudio').play();
       }
 
-      // Update camera to follow player
       cameraX = player.x - canvas.width / 2 + player.width / 2;
       if (cameraX < 0) cameraX = 0;
     }
