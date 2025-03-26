@@ -20,7 +20,7 @@
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="800" height="400"></canvas>
+  <canvas id="gameCanvas" width="2000" height="500"></canvas>
   <div id="message"></div>
   <audio id="loveAudio" src="your-audio.mp3"></audio>
   <script>
@@ -32,30 +32,31 @@
 
     const player = {
       x: 50,
-      y: 300,
+      y: 400,
       width: 40,
       height: 40,
       vy: 0,
-      jumpPower: -10,
+      jumpPower: -12,
       grounded: false,
       ducking: false
     };
 
-    const gravity = 0.5;
+    const gravity = 0.6;
     let keys = {};
 
     const coins = Array.from({ length: 10 }, (_, i) => ({
-      x: 150 + i * 60,
-      y: 300,
+      x: 200 + i * 150,
+      y: 400,
       collected: false
     }));
 
     const obstacles = [
-      { x: 350, y: 340, width: 20, height: 60 },
-      { x: 550, y: 360, width: 60, height: 20, requiresDuck: true }
+      { x: 600, y: 440, width: 20, height: 60 },
+      { x: 1200, y: 460, width: 60, height: 20, requiresDuck: true },
+      { x: 1600, y: 440, width: 30, height: 60 }
     ];
 
-    const goal = { x: 750, y: 300, width: 40, height: 40 };
+    const goal = { x: 1900, y: 400, width: 40, height: 40 };
 
     function drawPlayer() {
       if (catImg.complete) {
@@ -90,7 +91,6 @@
     }
 
     function update() {
-      // Movement
       if (keys['ArrowRight']) player.x += 4;
       if (keys['ArrowLeft']) player.x -= 4;
 
@@ -110,14 +110,12 @@
         player.grounded = true;
       }
 
-      // Coin Collection
       coins.forEach(coin => {
         if (!coin.collected && Math.abs(player.x - coin.x) < 30 && Math.abs(player.y - coin.y) < 30) {
           coin.collected = true;
         }
       });
 
-      // Obstacle Collision
       obstacles.forEach(obs => {
         const duckingEnough = obs.requiresDuck ? player.ducking : true;
         const playerHeight = player.ducking ? 20 : player.height;
@@ -128,7 +126,6 @@
         }
       });
 
-      // Reaching the Goal
       const allCollected = coins.every(c => c.collected);
       if (player.x + player.width >= goal.x && player.x <= goal.x + goal.width && allCollected) {
         document.getElementById('message').innerText = "You made it! Here's your surprise 💖";
@@ -138,7 +135,7 @@
 
     function resetGame() {
       player.x = 50;
-      player.y = 300;
+      player.y = 400;
       coins.forEach(c => c.collected = false);
     }
 
