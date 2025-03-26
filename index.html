@@ -20,7 +20,7 @@
   </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="2000" height="500"></canvas>
+  <canvas id="gameCanvas" width="800" height="500"></canvas>
   <div id="message"></div>
   <audio id="loveAudio" src="your-audio.mp3"></audio>
   <script>
@@ -28,7 +28,7 @@
     const ctx = canvas.getContext('2d');
 
     const catImg = new Image();
-    catImg.src = 'https://upload.wikimedia.org/wikipedia/commons/1/16/Cat_icon_white.svg';
+    catImg.src = 'https://i.imgur.com/jNNT4LE.png'; // white cat png
 
     const player = {
       x: 50,
@@ -43,6 +43,7 @@
 
     const gravity = 0.6;
     let keys = {};
+    let cameraX = 0;
 
     const coins = Array.from({ length: 10 }, (_, i) => ({
       x: 200 + i * 150,
@@ -59,12 +60,8 @@
     const goal = { x: 1900, y: 400, width: 40, height: 40 };
 
     function drawPlayer() {
-      if (catImg.complete) {
-        const height = player.ducking ? 20 : player.height;
-        ctx.drawImage(catImg, player.x, player.y, player.width, height);
-      } else {
-        catImg.onload = () => drawPlayer();
-      }
+      const height = player.ducking ? 20 : player.height;
+      ctx.drawImage(catImg, player.x - cameraX, player.y, player.width, height);
     }
 
     function drawCoins() {
@@ -72,7 +69,7 @@
       coins.forEach(coin => {
         if (!coin.collected) {
           ctx.beginPath();
-          ctx.arc(coin.x, coin.y, 10, 0, Math.PI * 2);
+          ctx.arc(coin.x - cameraX, coin.y, 10, 0, Math.PI * 2);
           ctx.fill();
         }
       });
@@ -81,13 +78,13 @@
     function drawObstacles() {
       ctx.fillStyle = 'brown';
       obstacles.forEach(obs => {
-        ctx.fillRect(obs.x, obs.y, obs.width, obs.height);
+        ctx.fillRect(obs.x - cameraX, obs.y, obs.width, obs.height);
       });
     }
 
     function drawGoal() {
       ctx.fillStyle = 'green';
-      ctx.fillRect(goal.x, goal.y, goal.width, goal.height);
+      ctx.fillRect(goal.x - cameraX, goal.y, goal.width, goal.height);
     }
 
     function update() {
@@ -131,12 +128,17 @@
         document.getElementById('message').innerText = "You made it! Here's your surprise 💖";
         document.getElementById('loveAudio').play();
       }
+
+      // Update camera to follow player
+      cameraX = player.x - canvas.width / 2 + player.width / 2;
+      if (cameraX < 0) cameraX = 0;
     }
 
     function resetGame() {
       player.x = 50;
       player.y = 400;
       coins.forEach(c => c.collected = false);
+      cameraX = 0;
     }
 
     function gameLoop() {
