@@ -28,7 +28,7 @@
     const ctx = canvas.getContext('2d');
 
     const catImg = new Image();
-    catImg.src = 'veera.jpeg'; // replace with the name of your uploaded cat image file
+    catImg.src = 'veera.jpeg';
 
     const player = {
       x: 50,
@@ -47,13 +47,13 @@
 
     const coins = Array.from({ length: 10 }, (_, i) => ({
       x: 200 + i * 150,
-      y: 400,
+      y: 340,
       collected: false
     }));
 
     const obstacles = [
-      { x: 600, y: 420, width: 20, height: 80, requiresDuck: false }, // vertical obstacle
-      { x: 1200, y: 440, width: 100, height: 40, requiresDuck: true }, // duck obstacle higher
+      { x: 600, y: 420, width: 20, height: 80, requiresDuck: false },
+      { x: 1200, y: 440, width: 100, height: 40, requiresDuck: true },
       { x: 1600, y: 420, width: 30, height: 80, requiresDuck: false }
     ];
 
@@ -108,7 +108,7 @@
       }
 
       coins.forEach(coin => {
-        if (!coin.collected && Math.abs(player.x - coin.x) < 30 && Math.abs(player.y - coin.y) < 30) {
+        if (!coin.collected && Math.abs(player.x - coin.x) < player.width && Math.abs(player.y - coin.y) < player.height) {
           coin.collected = true;
         }
       });
@@ -123,7 +123,7 @@
           player.y < obs.y + obs.height &&
           player.y + playerHeight > obs.y;
 
-        if (collision && !duckingEnough) {
+        if (collision && (!duckingEnough || !obs.requiresDuck)) {
           resetGame();
         }
       });
