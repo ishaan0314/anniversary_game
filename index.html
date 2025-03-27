@@ -46,17 +46,17 @@
     let cameraX = 0;
 
     const coins = [
-      { x: 200, y: 340, collected: false },
-      { x: 350, y: 340, collected: false },
-      { x: 500, y: 340, collected: false },
-      { x: 650, y: 340, collected: false },
-      { x: 800, y: 340, collected: false },
-      { x: 950, y: 340, collected: false },
-      { x: 1100, y: 340, collected: false },
-      { x: 1400, y: 340, collected: false },
-      { x: 1550, y: 340, collected: false },
-      { x: 1250, y: 440, collected: false } // only coin under horizontal obstacle remains
-    ];
+  { x: 200, y: 340, collected: false },
+  { x: 350, y: 340, collected: false },
+  { x: 500, y: 340, collected: false },
+  { x: 650, y: 340, collected: false },
+  { x: 800, y: 340, collected: false },
+  { x: 950, y: 340, collected: false },
+  { x: 1100, y: 340, collected: false },
+  { x: 1400, y: 340, collected: false },
+  { x: 1550, y: 340, collected: false },
+  { x: 1250, y: 440, collected: false }
+];
 
     const obstacles = [
       { x: 600, y: 420, width: 20, height: 80, requiresDuck: false },
@@ -137,7 +137,7 @@
 
       const allCollected = coins.every(c => c.collected);
       if (player.x + player.width >= goal.x && player.x <= goal.x + goal.width && allCollected) {
-        document.getElementById('message').innerText = "You did it maudu x";
+        document.getElementById('message').innerText = "Youdid it maudu x";
         document.getElementById('loveAudio').play();
       }
 
