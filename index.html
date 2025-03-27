@@ -137,7 +137,7 @@
 
       const allCollected = coins.every(c => c.collected);
       if (player.x + player.width >= goal.x && player.x <= goal.x + goal.width && allCollected) {
-        document.getElementById('message').innerText = "Youdid it maudu x";
+        document.getElementById('message').innerText = "You did it maudu x";
         document.getElementById('loveAudio').play();
       }
 
