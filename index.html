@@ -137,7 +137,7 @@
 
       const allCollected = coins.every(c => c.collected);
       if (player.x + player.width >= goal.x && player.x <= goal.x + goal.width && allCollected) {
-        document.getElementById('message').innerText = "You did it maudu x";
+        document.getElementById('message').innerText = "You made it! Here's your surprise 💖";
         document.getElementById('loveAudio').play();
       }
 
@@ -152,8 +152,35 @@
       cameraX = 0;
     }
 
-    function gameLoop() {
+    function drawBackground() {
+  // Draw sky (already blue via canvas background)
+
+  // Draw sun
+  ctx.fillStyle = 'yellow';
+  ctx.beginPath();
+  ctx.arc(100 - cameraX, 100, 40, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Draw clouds
+  ctx.fillStyle = 'white';
+  const clouds = [
+    { x: 300, y: 80 },
+    { x: 600, y: 50 },
+    { x: 900, y: 100 }
+  ];
+
+  clouds.forEach(cloud => {
+    ctx.beginPath();
+    ctx.arc(cloud.x - cameraX, cloud.y, 20, 0, Math.PI * 2);
+    ctx.arc(cloud.x + 20 - cameraX, cloud.y, 25, 0, Math.PI * 2);
+    ctx.arc(cloud.x + 50 - cameraX, cloud.y, 20, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+function gameLoop() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+      drawBackground();
       drawPlayer();
       drawCoins();
       drawObstacles();
