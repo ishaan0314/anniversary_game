@@ -32,7 +32,7 @@
 
     const player = {
       x: 50,
-      y: 400,
+      y: 360,
       width: 60,
       height: 80,
       vy: 0,
@@ -52,15 +52,15 @@
     }));
 
     const obstacles = [
-      { x: 600, y: 440, width: 20, height: 60, requiresDuck: false },
-      { x: 1200, y: 460, width: 60, height: 20, requiresDuck: true },
-      { x: 1600, y: 440, width: 30, height: 60, requiresDuck: false }
+      { x: 600, y: 420, width: 20, height: 80, requiresDuck: false }, // vertical obstacle
+      { x: 1200, y: 440, width: 100, height: 40, requiresDuck: true }, // duck obstacle higher
+      { x: 1600, y: 420, width: 30, height: 80, requiresDuck: false }
     ];
 
     const goal = { x: 1900, y: 400, width: 40, height: 40 };
 
     function drawPlayer() {
-      const height = player.ducking ? 20 : player.height;
+      const height = player.ducking ? 40 : player.height;
       ctx.drawImage(catImg, player.x - cameraX, player.y, player.width, height);
     }
 
@@ -115,15 +115,15 @@
 
       obstacles.forEach(obs => {
         const duckingEnough = obs.requiresDuck ? player.ducking : true;
-        const playerHeight = player.ducking ? 20 : player.height;
+        const playerHeight = player.ducking ? 40 : player.height;
 
-        if (
+        const collision =
           player.x < obs.x + obs.width &&
           player.x + player.width > obs.x &&
           player.y < obs.y + obs.height &&
-          player.y + playerHeight > obs.y &&
-          !duckingEnough
-        ) {
+          player.y + playerHeight > obs.y;
+
+        if (collision && !duckingEnough) {
           resetGame();
         }
       });
@@ -140,7 +140,7 @@
 
     function resetGame() {
       player.x = 50;
-      player.y = 400;
+      player.y = 360;
       coins.forEach(c => c.collected = false);
       cameraX = 0;
     }
